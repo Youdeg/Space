@@ -14,7 +14,7 @@ class Vector {
         this.y += vector.y;
     }
 
-    //вычесть из вектора данный вектор вектор
+    //вычесть из вектора данный вектор 
     minus(vector) {
         this.x -= vector.x;
         this.y -= vector.y;
@@ -25,7 +25,7 @@ class Vector {
         return new Vector(this.x / len, this.y / len);
     }
 
-    //динормализовать вектор
+    //денормализовать вектор
     unnormalise(len) {
         return new Vector(this.x * len, this.y * len);
     }

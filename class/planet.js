@@ -29,6 +29,7 @@ class Planet {
         this.y += (vector.y / fps) * speed;
     }
 
+
     //отрисовать круг на холсте
     //принимает на вход ссылку на холст
     draw(ctx) {

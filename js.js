@@ -1,31 +1,54 @@
 let canvas,
-    ctx;
+    ctx,
+    speed_inp,
+    pause_btn,
+    mouse = { x:0, y:0};
 
-const scale = 2500, //масштаб в километрах
+let scale = 2500, //масштаб в километрах
     fps = 60, //количество кадров в секунду
-    speed = 1; //ускорение симуляции
+    speed = 100, //ускорение симуляции
+    pause = true;
 
 window.onload = function () {
     canvas = document.getElementById("space");
     ctx = canvas.getContext("2d");
 
-    //-----планеты------
-    //todo: сделать парс планет из json файла\сделать редактор карты
-    let earth = new Planet(300000 + 50000, 150000 + 50000, 6371 * 3, "green", 5.972 * Math.pow(10, 4), new Vector(0, 0));
-    let moon = new Planet(300000 + 384000 + 50000, 150000 + 50000, 2737 * 3, "pink", 50 * Math.pow(10, -15), new Vector(0, 0));
-    //------------------
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // //-----планеты------
+    // //todo: сделать парс планет из json файла\сделать редактор карты
+    // let earth = new Planet(300000 + 50000, 150000 + 50000, 6371 * 3, "green", 5.972 * Math.pow(10, 4), new Vector(0, 0));
+    // let moon = new Planet(300000 + 384000 + 50000, 150000 + 50000, 2737 * 3, "pink", 50 * Math.pow(10, -15), new Vector(0, 0));
+    // //------------------
 
     //установка таймера отрисовка
-    setInterval(tic, 1000 / fps);
+    setInterval(tick, 1000 / fps);
+
+    canvas.addEventListener("mousedown", function(e){       
+        mouse.x = e.pageX - this.offsetLeft;
+        mouse.y = e.pageY - this.offsetTop;
+        const mass = document.getElementsByClassName("mass_1")[0].value,
+        pow = document.getElementsByClassName("mass_2")[0].value,
+        color = document.getElementsByClassName("color")[0].value,
+        rad = document.getElementsByClassName("rad")[0].value;
+        new Planet(mouse.x * scale, mouse.y * scale, rad * 6371 * 3, color, mass * Math.pow(10, pow) / 1000, new Vector(0, 0));
+    });
+
+    pause_btn = document.getElementsByClassName("pause")[0];
+    speed_inp = document.getElementsByClassName("speed")[0];
+
+    speed_inp.addEventListener('input', () => { speed = speed_inp.value; });
 };
 
 //функция отрисовки каждого шага
-function tic() {
+function tick() {
     //отчистить холст
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     //проходимся по массиву планет
     for (const planet of planets) {
+        if (!pause) {
         let move_vector = planet.speed;
         //вычисляем все вектора и складываем
         for (const other_planet of planets) {
@@ -33,14 +56,26 @@ function tic() {
             const speed_vector = getSpeedVector(planet, other_planet);
             move_vector.plus(speed_vector);
         }
-
-        ctx.beginPath();
-        //перемещаем планету
         planet.move(move_vector, speed, fps);
+        ctx.beginPath();
+        const norm_move_vector = move_vector.norm();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'blue';
+        ctx.moveTo(planet.x / scale, planet.y / scale);
+        ctx.lineTo((planet.x + norm_move_vector.x * scale * 50)  / scale, (planet.y + norm_move_vector.y * scale * 50)  / scale);
+        ctx.stroke();
+        ctx.closePath();
+    }
+        ctx.beginPath();
         //отрисовываем планету
         planet.draw(ctx);
         ctx.closePath();
     }
+}
+
+function set_pause() {
+    pause = !pause;
+    pause_btn.html = (pause) ? "Запустить симуляцию" : "Поставить на паузу";
 }
 
 //формула ускорения. Принимает на вход массу объекта и расстояние до него

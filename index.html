@@ -8,15 +8,46 @@
     <script src="js.js"></script>
     <style>
         #space {
-            width: 100vw;
+            width: 80vw;
             height: 100vh;
             left: 0px;
             top: 0px;
             background-color: black;
         }
+
+        .data {
+            width: 20vw;
+            height: 100vh;
+            background-color: gray;
+        }
+
+        * {
+	outline: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	}
+
+    body {
+        overflow: hidden;
+    }
+
+    .container {
+        display: flex;
+
+    }
     </style>
 </head>
 <body>
-<canvas id="space"></canvas>
+    <div class="container">
+    <canvas id="space"></canvas>
+    <div class="data">
+        <input class="mass_1" type="text" name="message" placeholder="масса"/> <input class="mass_2" type="text" name="message" placeholder="степень"/> <br>
+        <input class="color" type="text" name="message" placeholder="цвет"/> <br>
+        <input class="rad" type="text" name="message" placeholder="радиус"/> <br> 
+        скорость симуляции - <input class="speed" type="number" name="message" value="1" placeholder="скорость симуляции"/>
+        <button class="pause" onclick="set_pause()">Запустить симуляцию</button>
+    </div>
+    </div>
 </body>
 </html>

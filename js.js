@@ -1,6 +1,7 @@
 let canvas,
     ctx,
     speed_inp,
+    scale_inp,
     pause_btn,
     mouse = { x:0, y:0};
 
@@ -31,14 +32,18 @@ window.onload = function () {
         const mass = document.getElementsByClassName("mass_1")[0].value,
         pow = document.getElementsByClassName("mass_2")[0].value,
         color = document.getElementsByClassName("color")[0].value,
-        rad = document.getElementsByClassName("rad")[0].value;
-        new Planet(mouse.x * scale, mouse.y * scale, rad * 6371 * 3, color, mass * Math.pow(10, pow) / 1000, new Vector(0, 0));
+        rad = document.getElementsByClassName("rad")[0].value,
+        x = document.getElementsByClassName("x")[0].value,
+        y = document.getElementsByClassName("y")[0].value;
+        new Planet(mouse.x * scale, mouse.y * scale, rad * 6371 * 3, color, mass * Math.pow(10, pow) / 1000, new Vector(parseFloat(x), parseFloat(y)));
     });
 
     pause_btn = document.getElementsByClassName("pause")[0];
     speed_inp = document.getElementsByClassName("speed")[0];
-
     speed_inp.addEventListener('input', () => { speed = speed_inp.value; });
+
+    scale_inp = document.getElementsByClassName("scale")[0];
+    scale_inp.addEventListener('input', () => { scale = scale_inp.value; });
 };
 
 //функция отрисовки каждого шага
@@ -57,14 +62,14 @@ function tick() {
             move_vector.plus(speed_vector);
         }
         planet.move(move_vector, speed, fps);
-        ctx.beginPath();
-        const norm_move_vector = move_vector.norm();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'blue';
-        ctx.moveTo(planet.x / scale, planet.y / scale);
-        ctx.lineTo((planet.x + norm_move_vector.x * scale * 50)  / scale, (planet.y + norm_move_vector.y * scale * 50)  / scale);
-        ctx.stroke();
-        ctx.closePath();
+        // ctx.beginPath();
+        // const norm_move_vector = move_vector.norm();
+        // ctx.lineWidth = 5;
+        // ctx.strokeStyle = 'blue';
+        // ctx.moveTo(planet.x / scale, planet.y / scale);
+        // ctx.lineTo((planet.x + norm_move_vector.x * scale * 50)  / scale, (planet.y + norm_move_vector.y * scale * 50)  / scale);
+        // ctx.stroke();
+        // ctx.closePath();
     }
         ctx.beginPath();
         //отрисовываем планету
@@ -75,7 +80,7 @@ function tick() {
 
 function set_pause() {
     pause = !pause;
-    pause_btn.html = (pause) ? "Запустить симуляцию" : "Поставить на паузу";
+    pause_btn.innerHTML = (pause) ? "Запустить симуляцию" : "Поставить на паузу";
 }
 
 //формула ускорения. Принимает на вход массу объекта и расстояние до него

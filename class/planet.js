@@ -38,3 +38,7 @@ class Planet {
         ctx.fill();
     }
 }
+
+function reset() {
+    planets = [];
+}
